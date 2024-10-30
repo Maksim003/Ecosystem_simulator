@@ -42,7 +42,7 @@ public class Validation {
         String text;
         while (true) {
             text = sc.nextLine().trim();
-            if (isRussianLetters(text) && !text.isEmpty()) {
+            if (isRussianLetters(text)) {
                 return text;
             } else {
                 System.out.println("Некорректный ввод. Пожалуйста, введите только русские буквы.");

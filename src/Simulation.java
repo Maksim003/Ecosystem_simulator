@@ -7,9 +7,14 @@ public class Simulation {
     private ArrayList<Animals> animals = new ArrayList<>();
     private ArrayList<Plants> plants = new ArrayList<>();
     private int id;
+    File file;
 
     public Simulation(String name) {
         this.name = name;
+    }
+
+    public Simulation(File file) {
+        this.file = file;
     }
 
     public Simulation() {
@@ -63,7 +68,7 @@ public class Simulation {
     }
 
     public void saveSimulation() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("simulations.txt", true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
             writer.write(this.toString());
             writer.newLine();
         } catch (IOException e) {
@@ -72,6 +77,63 @@ public class Simulation {
     }
 
     public Simulation loadSimulation(String simulationName, int id) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(";");
+                if (parts[0].equalsIgnoreCase(simulationName) && parts[3].equalsIgnoreCase(String.valueOf(id))) {
+                    Simulation simulation = new Simulation(parts[0]);
+                    if (parts.length > 1 && !parts[1].isEmpty()) {
+                        String[] animalsData = parts[1].split(",");
+                        for (String animalData : animalsData) {
+                            String[] animalParts = animalData.split(":");
+                            if (animalParts.length == 4) {
+                                Animals animal = new Animals(animalParts[0], animalParts[1], animalParts[2], animalParts[3]);
+                                simulation.addAnimal(animal);
+                            }
+                        }
+                    }
+                    if (parts.length > 2 && !parts[2].isEmpty()) {
+                        String[] plantsData = parts[2].split(",");
+                        for (String plantData : plantsData) {
+                            String[] plantParts = plantData.split(":");
+                            if (plantParts.length == 3) {
+                                Plants plant = new Plants(plantParts[0], plantParts[1], plantParts[2]);
+                                simulation.addPlant(plant);
+                            }
+                        }
+                    }
+                    simulation.setId(Integer.parseInt(parts[3]));
+                    return simulation;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new Simulation(file);
+    }
+
+    public Integer getLastSimulationId() {
+        Integer lastId = null;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(";");
+                if (parts.length > 3) {
+                    lastId = Integer.parseInt(parts[3]);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            System.out.println("Ошибка преобразования id: " + e.getMessage());
+        }
+        return lastId;
+    }
+
+
+
+    /*public Simulation loadSimulation(String simulationName, int id) {
         File file = new File("simulations.txt");
         try {
             if (!file.exists()) {
@@ -112,9 +174,9 @@ public class Simulation {
             e.printStackTrace();
         }
         return new Simulation();
-    }
+    }*/
 
-    public Integer getLastSimulationId() {
+    /*public Integer getLastSimulationId() {
         File file = new File("simulations.txt");
         Integer lastId = null;
 
@@ -127,8 +189,8 @@ public class Simulation {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split(";");
-                    if (parts.length > 3) { // Убедитесь, что есть достаточно частей
-                        lastId = Integer.parseInt(parts[3]); // Сохраняем id последней записи
+                    if (parts.length > 3) {
+                        lastId = Integer.parseInt(parts[3]);
                     }
                 }
             }
@@ -137,8 +199,8 @@ public class Simulation {
         } catch (NumberFormatException e) {
             System.out.println("Ошибка преобразования id: " + e.getMessage());
         }
-        return lastId; // Возвращаем id последней записи или null, если файл пуст
-    }
+        return lastId;
+    }*/
 
 
     @Override

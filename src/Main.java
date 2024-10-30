@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -5,12 +7,14 @@ public class Main {
     static Scanner sc = new Scanner(System.in);
     static Validation validation = new Validation(sc);
     static Menu menu = new Menu(sc, validation);
-    static Simulation simulation = new Simulation();
+    static File file = new File("simulations.txt");
+    static Simulation simulation = new Simulation(file);
     //static ArrayList<Simulation> simulations = new ArrayList<>();
 
     public static void main(String[] args) {
         int choice;
         Integer id;
+        createFile();
         while (true) {
             choice = menu.mainMenu();
             switch (choice) {
@@ -272,6 +276,16 @@ public class Main {
             return null;
         }
         return input;
+    }
+
+    public static void createFile() {
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 }
