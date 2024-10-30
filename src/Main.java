@@ -9,7 +9,6 @@ public class Main {
     static Menu menu = new Menu(sc, validation);
     static File file = new File("simulations.txt");
     static Simulation simulation = new Simulation(file);
-    //static ArrayList<Simulation> simulations = new ArrayList<>();
 
     public static void main(String[] args) {
         int choice;
