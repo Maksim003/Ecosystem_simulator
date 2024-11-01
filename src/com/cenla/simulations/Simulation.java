@@ -1,3 +1,9 @@
+package com.cenla.simulations;
+
+import com.cenla.models.Animals;
+import com.cenla.models.Conditions;
+import com.cenla.models.Plants;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -7,7 +13,7 @@ public class Simulation {
     private ArrayList<Animals> animals = new ArrayList<>();
     private ArrayList<Plants> plants = new ArrayList<>();
     private int id;
-    File file;
+    File file = new File("simulations.txt");
 
     public Simulation(String name) {
         this.name = name;
@@ -87,8 +93,9 @@ public class Simulation {
                         String[] animalsData = parts[1].split(",");
                         for (String animalData : animalsData) {
                             String[] animalParts = animalData.split(":");
-                            if (animalParts.length == 4) {
-                                Animals animal = new Animals(animalParts[0], animalParts[1], animalParts[2], animalParts[3]);
+                            if (animalParts.length == 7) {
+                                Conditions condition = new Conditions(Double.parseDouble(animalParts[4]), Double.parseDouble(animalParts[5]), Double.parseDouble(animalParts[6]));
+                                Animals animal = new Animals(animalParts[0], animalParts[1], animalParts[2], Integer.parseInt(animalParts[3]), condition);
                                 simulation.addAnimal(animal);
                             }
                         }
@@ -97,8 +104,9 @@ public class Simulation {
                         String[] plantsData = parts[2].split(",");
                         for (String plantData : plantsData) {
                             String[] plantParts = plantData.split(":");
-                            if (plantParts.length == 3) {
-                                Plants plant = new Plants(plantParts[0], plantParts[1], plantParts[2]);
+                            if (plantParts.length == 6) {
+                                Conditions condition = new Conditions(Double.parseDouble(plantParts[3]), Double.parseDouble(plantParts[4]), Double.parseDouble(plantParts[5]));
+                                Plants plant = new Plants(plantParts[0], plantParts[1], Integer.parseInt(plantParts[2]), condition);
                                 simulation.addPlant(plant);
                             }
                         }

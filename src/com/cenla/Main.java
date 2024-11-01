@@ -1,5 +1,17 @@
+package com.cenla;
+
+import com.cenla.interfaces.Organism;
+import com.cenla.menu.Menu;
+import com.cenla.models.Animals;
+import com.cenla.models.Conditions;
+import com.cenla.models.Plants;
+import com.cenla.simulations.Simulation;
+import com.cenla.validations.Validation;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -9,6 +21,8 @@ public class Main {
     static Menu menu = new Menu(sc, validation);
     static File file = new File("simulations.txt");
     static Simulation simulation = new Simulation(file);
+    static final String[] animalTypes = {"Млекопитающее", "Птица", "Рептилия", "Амфибия", "Рыба", "Беспозвоночное"};
+    static final String[] plantTypes = {"Дерево", "Кустарник", "Трава", "Цветок", "Водное растение"};
 
     public static void main(String[] args) {
         int choice;
@@ -71,7 +85,8 @@ public class Main {
                     deleting();
                     break;
                 case 5:
-
+                    Conditions condition = settingConditions();
+                    forecast(condition);
                     break;
                 case 6:
                     return;
@@ -85,24 +100,30 @@ public class Main {
             choice = menu.AnimalsAndPlantsMenu();
             switch (choice) {
                 case 1:
+                    System.out.println("Возможные типы: " + Arrays.toString(animalTypes).replaceAll("[\\[\\],]", ""));
                     System.out.println("Введите тип: ");
-                    String typeAnimal = validation.enterText();
+                    String typeAnimal = validation.enterType(animalTypes);
                     System.out.println("Введите вид: ");
                     String speciesAnimal = validation.enterText();
-                    System.out.println("Введите среду обитания: ");
-                    String habitatAnimal = validation.enterText();
-                    System.out.println("Введите тип питания: ");
+                    System.out.println("Введите тип питания (если несколько, через пробел): ");
                     String diet = validation.enterText();
-                    simulation.getAnimals().add(new Animals(typeAnimal, speciesAnimal, habitatAnimal, diet));
+                    System.out.println("Введите количество: ");
+                    int countAnimal = validation.getPositiveInt();
+                    System.out.println("Далее введите необходимые ресурсы и климатические условия");
+                    Conditions conditionAnimal = settingConditions();
+                    simulation.getAnimals().add(new Animals(typeAnimal, speciesAnimal, diet, countAnimal, conditionAnimal));
                     break;
                 case 2:
+                    System.out.println("Возможные типы: " + Arrays.toString(plantTypes).replaceAll("[\\[\\],]", ""));
                     System.out.println("Введите тип: ");
-                    String typePlant = validation.enterText();
+                    String typePlant = validation.enterType(plantTypes);
                     System.out.println("Введите вид: ");
                     String speciesPlant = validation.enterText();
-                    System.out.println("Условие роста: ");
-                    String growthCondition = validation.enterText();
-                    simulation.getPlants().add(new Plants(typePlant, speciesPlant, growthCondition));
+                    System.out.println("Введите количество: ");
+                    int countPlant = validation.getPositiveInt();
+                    System.out.println("Далее введите необходимые ресурсы и климатические условия");
+                    Conditions conditionPlant = settingConditions();
+                    simulation.getPlants().add(new Plants(typePlant, speciesPlant, countPlant, conditionPlant));
                     break;
                 case 3:
                     return;
@@ -163,8 +184,9 @@ public class Main {
             choice = menu.editingAnimalsMenu();
             switch (choice) {
                 case 1:
+                    System.out.println("Возможные типы: " + Arrays.toString(animalTypes).replaceAll("[\\[\\],]", ""));
                     System.out.println("Введите тип: ");
-                    String type = validation.enterText();
+                    String type = validation.enterType(animalTypes);
                     simulation.getAnimals().get(number - 1).setType(type);
                     System.out.println("Тип успешно изменён");
                     break;
@@ -175,18 +197,21 @@ public class Main {
                     System.out.println("Вид успешно изменён");
                     break;
                 case 3:
-                    System.out.println("Введите среду обитания: ");
-                    String habitat = validation.enterText();
-                    simulation.getAnimals().get(number - 1).setHabitat(habitat);
-                    System.out.println("Среда обитания успешно изменена");
-                    break;
-                case 4:
                     System.out.println("Введите тип питания: ");
                     String diet = validation.enterText();
                     simulation.getAnimals().get(number - 1).setDiet(diet);
                     System.out.println("Тип питания успешно изменён");
                     break;
+                case 4:
+                    System.out.println("Введите количество: ");
+                    int count = validation.getPositiveInt();
+                    simulation.getAnimals().get(number - 1).setCount(count);
+                    System.out.println("Количество успешно изменено");
+                    break;
                 case 5:
+                    editingConditions(simulation.getAnimals(), number);
+                    break;
+                case 6:
                     return;
             }
         }
@@ -198,8 +223,9 @@ public class Main {
             choice = menu.editingPlantsMenu();
             switch (choice) {
                 case 1:
+                    System.out.println("Возможные типы: " + Arrays.toString(plantTypes).replaceAll("[\\[\\],]", ""));
                     System.out.println("Введите тип: ");
-                    String type = validation.enterText();
+                    String type = validation.enterType(plantTypes);
                     simulation.getPlants().get(number - 1).setType(type);
                     System.out.println("Тип успешно изменён");
                     break;
@@ -210,12 +236,15 @@ public class Main {
                     System.out.println("Вид успешно изменён");
                     break;
                 case 3:
-                    System.out.println("Введите условие роста: ");
-                    String growthCondition = validation.enterText();
-                    simulation.getPlants().get(number - 1).setGrowthCondition(growthCondition);
-                    System.out.println("Условие роста успешно изменено");
+                    System.out.println("Введите количество: ");
+                    int count = validation.getPositiveInt();
+                    simulation.getPlants().get(number - 1).setCount(count);
+                    System.out.println("Количество успешно изменено");
                     break;
                 case 4:
+                    editingConditions(simulation.getPlants(), number);
+                    break;
+                case 5:
                     return;
             }
         }
@@ -256,15 +285,111 @@ public class Main {
     public static void viewingAnimals() {
         for (int i = 0; i < simulation.getAnimals().size(); i++) {
             System.out.println("--" + (i + 1) + ") Тип: " + simulation.getAnimals().get(i).getType() + " Вид: " + simulation.getAnimals().get(i).getSpecies()
-                    + " Среда обитания: " + simulation.getAnimals().get(i).getHabitat() + " Тип питания: " + simulation.getAnimals().get(i).getDiet() + "--");
+                    + " Тип питания: " + simulation.getAnimals().get(i).getDiet() + " Количество: " + simulation.getAnimals().get(i).getCount() + "--");
         }
     }
 
     public static void viewingPlants() {
         for (int i = 0; i < simulation.getPlants().size(); i++) {
             System.out.println("--" + (i + 1) + ") Тип: " + simulation.getPlants().get(i).getType() + " Вид: " + simulation.getPlants().get(i).getSpecies()
-                    + " Условие роста: " + simulation.getPlants().get(i).getGrowthCondition());
+            + " Количество: " + simulation.getPlants().get(i).getCount() + "--");
         }
+    }
+
+    public static Conditions settingConditions() {
+        System.out.println("Введите среднюю температуру (°C): ");
+        double temperature = validation.getRightCondition(0, 50);
+        System.out.println("Введите среднюю влажность (%): ");
+        double humidity = validation.getRightCondition(0, 100);
+        System.out.println("Введите среднее количество воды (л): ");
+        double waterAvailability = validation.getPositiveDouble();
+        return new Conditions(temperature, humidity, waterAvailability);
+    }
+
+    public static void editingConditions(ArrayList<? extends Organism> beings, int number) {
+        int choice;
+        while (true) {
+            choice = menu.conditionsMenu();
+            switch (choice) {
+                case 1:
+                    System.out.println("Введите среднюю температуру (°C): ");
+                    double temperature = validation.getRightCondition(0, 50);
+                    beings.get(number - 1).getCondition().setAverageTemperature(temperature);
+                    break;
+                case 2:
+                    System.out.println("Введите среднюю влажность (%): ");
+                    double humidity = validation.getRightCondition(0, 100);
+                    beings.get(number - 1).getCondition().setAverageHumidity(humidity);
+                    break;
+                case 3:
+                    System.out.println("Введите среднее количество воды (л): ");
+                    double waterAvailability = validation.getPositiveDouble();
+                    beings.get(number - 1).getCondition().setWaterAvailability(waterAvailability);
+                    break;
+                case 4:
+                    return;
+            }
+        }
+    }
+
+    public static void forecastAnimals(Conditions condition) {
+        if (!simulation.getAnimals().isEmpty()) {
+            for (Animals animals : simulation.getAnimals()) {
+                if (checkNormalConditions(condition, animals) && (animals.canEatAny(simulation.getAnimals()) || animals.canEatAny(simulation.getPlants()))) {
+                    System.out.println("Популяция остаётся стабильной для " + animals.getType() + " : " + animals.getSpecies());
+                } else if (checkGoodConditions(condition, animals) && (animals.canEatAny(simulation.getAnimals()) || animals.canEatAny(simulation.getPlants()))) {
+                    System.out.println("Популяция увеличится для " + animals.getType() + " : " + animals.getSpecies());
+                } else
+                    System.out.println("Популяция уменьшится для " + animals.getType() + " : " + animals.getSpecies());
+            }
+
+        } else System.out.println("Животных нет");
+    }
+
+    public static void forecastPlants(Conditions condition) {
+        if (!simulation.getPlants().isEmpty()) {
+            for (Plants plants : simulation.getPlants()) {
+                if (checkNormalConditions(condition, plants)) {
+                    System.out.println("Популяция остаётся стабильной для " + plants.getType() + " : " + plants.getSpecies());
+                } else if (checkGoodConditions(condition, plants)) {
+                    System.out.println("Популяция увеличится для " + plants.getType() + " : " + plants.getSpecies());
+                } else {
+                    System.out.println("Популяция уменьшится для " + plants.getType() + " : " + plants.getSpecies());
+                }
+            }
+        } else {
+            System.out.println("Растений нет");
+        }
+    }
+
+    public static void forecast(Conditions condition) {
+        int choice;
+        while (true) {
+            choice = menu.AnimalsAndPlantsMenu();
+            switch (choice) {
+                case 1:
+                    forecastAnimals(condition);
+                    break;
+                case 2:
+                    forecastPlants(condition);
+                    break;
+                case 3:
+                    return;
+            }
+        }
+    }
+
+
+    public static boolean checkGoodConditions(Conditions condition, Organism organism) {
+        return (condition.getAverageTemperature() - organism.getCondition().getAverageTemperature() > 0 && condition.getAverageTemperature() - organism.getCondition().getAverageTemperature() < 7) &&
+                (condition.getAverageHumidity() - organism.getCondition().getAverageHumidity() > 0 && condition.getAverageHumidity() - organism.getCondition().getAverageHumidity() < 20) &&
+                condition.getWaterAvailability() - organism.getCondition().getWaterAvailability() > 0;
+    }
+
+    public static boolean checkNormalConditions(Conditions condition, Organism organism) {
+        return condition.getAverageTemperature() == organism.getCondition().getAverageTemperature() &&
+                condition.getAverageHumidity() == organism.getCondition().getAverageHumidity() &&
+                condition.getWaterAvailability() == organism.getCondition().getWaterAvailability();
     }
 
     public static String getInputStringWithExit(String prompt) {

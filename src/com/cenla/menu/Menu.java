@@ -1,3 +1,7 @@
+package com.cenla.menu;
+
+import com.cenla.validations.Validation;
+
 import java.util.Scanner;
 
 public class Menu {
@@ -44,10 +48,10 @@ public class Menu {
 
     public int editingAnimalsMenu() {
         while (true) {
-            System.out.println("1 - Изменить тип\n2 - Изменить вид\n3 - Изменить среду обитания\n" +
-                    "4 - Изменить тип питания\n5 - Выход");
+            System.out.println("1 - Изменить тип\n2 - Изменить вид\n3 - Изменить среду обитания\n4 - Изменить количество" +
+                    "\n5 - Изменить ресурсы и климатические условия\n6 - Выход");
             choice = validation.getPositiveInt();
-            if (choice >= 1 && choice <= 5) {
+            if (choice >= 1 && choice <= 6) {
                 return choice;
             }
         }
@@ -55,7 +59,18 @@ public class Menu {
 
     public int editingPlantsMenu() {
         while (true) {
-            System.out.println("1 - Изменить тип\n2 - Изменить вид\n3 - Изменить условие роста\n4 - Выход");
+            System.out.println("1 - Изменить тип\n2 - Изменить вид\n\n3 - Изменить количество" +
+                    "\n4 - Изменить ресурсы и климатические условия\n5 - Выход");
+            choice = validation.getPositiveInt();
+            if (choice >= 1 && choice <= 5) {
+                return choice;
+            }
+        }
+    }
+
+    public int conditionsMenu() {
+        while (true) {
+            System.out.println("1 - Изменить среднюю температуру\n2 - Изменить среднюю влажность\n3 - Изменить среднее количество воды\n4 - Выход");
             choice = validation.getPositiveInt();
             if (choice >= 1 && choice <= 4) {
                 return choice;
