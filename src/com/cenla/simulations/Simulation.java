@@ -24,7 +24,6 @@ public class Simulation {
 
     public Simulation(File file) {
         this.file = file;
-        //executorService= Executors.newSingleThreadExecutor();
     }
 
     public Simulation() {
