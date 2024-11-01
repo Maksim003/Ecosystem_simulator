@@ -69,7 +69,7 @@ public class Animals implements Organism {
 
     @Override
     public boolean eat(Organism organism) {
-        if (this.diet.contains(organism.getType().toLowerCase()) || matchesWithEndings(this.diet, organism.getType())) {
+        if (this.diet.contains(organism.getType().toLowerCase()) || matchesWithEndings(this.diet.toLowerCase(), organism.getType())) {
             return true;
         }
         return false;
