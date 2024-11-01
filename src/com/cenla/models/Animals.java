@@ -89,7 +89,7 @@ public class Animals implements Organism {
 
     private boolean matchesWithEndings(String diet, String organismType) {
         Map<String, List<String>> endingsMap = new HashMap<>();
-        endingsMap.put("млекопитающее", Arrays.asList("ое", "ие", "их"));
+        endingsMap.put("млекопитающее", Arrays.asList("ие", "их"));
         endingsMap.put("птица", Arrays.asList("ца", "цы", "ц"));
         endingsMap.put("рептилия", Arrays.asList("ия", "ии", "ий"));
         endingsMap.put("амфибия", Arrays.asList("ия", "ии", "ий"));

@@ -61,14 +61,4 @@ public class Plants implements Organism {
         return false;
     }
 
-
-    /*@Override
-    public boolean eat(com.cenla.models.Plants plant) {
-        throw new UnsupportedOperationException("Растения не едят другие организмы.");
-    }
-
-    @Override
-    public boolean eat(com.cenla.models.Animals animal) {
-        throw new UnsupportedOperationException("Растения не едят другие организмы.");
-    }*/
 }
