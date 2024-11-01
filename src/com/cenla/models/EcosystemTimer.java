@@ -9,7 +9,7 @@ public class EcosystemTimer {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public void startUpdating(Simulation simulation) {
-        scheduler.scheduleAtFixedRate(simulation::update, 0, 15, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(simulation::update, 0, 120, TimeUnit.SECONDS);
     }
 
     public void stopUpdating() {
