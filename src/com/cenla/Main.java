@@ -4,6 +4,7 @@ import com.cenla.interfaces.Organism;
 import com.cenla.menu.Menu;
 import com.cenla.models.Animals;
 import com.cenla.models.Conditions;
+import com.cenla.models.EcosystemTimer;
 import com.cenla.models.Plants;
 import com.cenla.simulations.Simulation;
 import com.cenla.validations.Validation;
@@ -25,6 +26,7 @@ public class Main {
     static final String[] plantTypes = {"Дерево", "Кустарник", "Трава", "Цветок", "Водное растение"};
 
     public static void main(String[] args) {
+        EcosystemTimer ecosystemTimer = new EcosystemTimer();
         int choice;
         Integer id;
         createFile();
@@ -33,18 +35,20 @@ public class Main {
             switch (choice) {
                 case 1:
                     id = simulation.getLastSimulationId();
+                    ecosystemTimer.startUpdating(simulation);
                     createSimulation(id);
-                    if (simulation.getName() != null) simulation.saveSimulation();
+                    simulation.saveSimulation();
                     break;
                 case 2:
-                    String name = getInputStringWithExit("Введите имя симуляции: ");
-                    if (name == null) return;
+                    System.out.println("Введите название симуляции: ");
+                    String name = validation.enterText();
                     System.out.println("Введите id: ");
                     int idSimulation = validation.getPositiveInt();
                     simulation = simulation.loadSimulation(name, idSimulation);
                     if (simulation.isEmpty()) {
                         System.out.println("Симуляция с именем '" + name + "' и с id '" + idSimulation + "' не найдена");
                     } else {
+                        ecosystemTimer.startUpdating(simulation);
                         workWithExistingSimulation();
                         id = simulation.getLastSimulationId();
                         simulation.setId(id + 1);
@@ -52,6 +56,7 @@ public class Main {
                     }
                     break;
                 case 3:
+                    ecosystemTimer.stopUpdating();
                     return;
             }
 
@@ -59,8 +64,7 @@ public class Main {
     }
 
     public static void createSimulation(Integer id) {
-        String name = getInputStringWithExit("Введите имя симуляции: ");
-        if (name == null) return;
+        String name = validation.enterText();
         simulation.setName(name);
         if (id == null) simulation.setId(1);
         else simulation.setId(id + 1);
@@ -390,16 +394,6 @@ public class Main {
         return condition.getAverageTemperature() == organism.getCondition().getAverageTemperature() &&
                 condition.getAverageHumidity() == organism.getCondition().getAverageHumidity() &&
                 condition.getWaterAvailability() == organism.getCondition().getWaterAvailability();
-    }
-
-    public static String getInputStringWithExit(String prompt) {
-        System.out.println(prompt + "(или 'выход' для выхода): ");
-        String input = validation.enterText();
-        if (input.equalsIgnoreCase("выход")) {
-            System.out.println("Выход из меню");
-            return null;
-        }
-        return input;
     }
 
     public static void createFile() {

@@ -11,7 +11,7 @@ public class Animals implements Organism {
     private int count;
     private Conditions condition;
 
-    public Animals()  {
+    public Animals() {
     }
 
     public Animals(String type, String species, String diet, int count, Conditions condition) {
@@ -69,16 +69,13 @@ public class Animals implements Organism {
 
     @Override
     public boolean eat(Organism organism) {
-        //String[] diets = this.diet.split(" ");
-        //for (String diet : diets) {
-            if (this.diet.contains(organism.getType().toLowerCase()) || matchesWithEndings(this.diet, organism.getType())) {
-                return true;
-            }
-        //}
+        if (this.diet.contains(organism.getType().toLowerCase()) || matchesWithEndings(this.diet, organism.getType())) {
+            return true;
+        }
         return false;
     }
 
-    public boolean canEatAny(ArrayList<? extends Organism>  organisms) {
+    public boolean canEatAny(ArrayList<? extends Organism> organisms) {
         for (Organism organism : organisms) {
             if (!organism.equals(this) && this.eat(organism)) {
                 return true;
@@ -89,7 +86,7 @@ public class Animals implements Organism {
 
     private boolean matchesWithEndings(String diet, String organismType) {
         Map<String, List<String>> endingsMap = new HashMap<>();
-        endingsMap.put("млекопитающее", Arrays.asList("ие", "их"));
+        endingsMap.put("млекопитающее", Arrays.asList("ие", "их", "ее"));
         endingsMap.put("птица", Arrays.asList("ца", "цы", "ц"));
         endingsMap.put("рептилия", Arrays.asList("ия", "ии", "ий"));
         endingsMap.put("амфибия", Arrays.asList("ия", "ии", "ий"));
